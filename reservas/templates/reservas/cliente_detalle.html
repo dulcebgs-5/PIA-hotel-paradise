@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cliente.nombre }} {{ cliente.apellidos }} - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>{{ cliente.nombre }} {{ cliente.apellidos }}</h1>
+<p>Correo: {{ cliente.correo }}</p>
+<p>Teléfono: {{ cliente.telefono }}</p>
+<p>Fecha de registro: {{ cliente.fecha_registro }}</p>
+<p>
+  <a class="btn btn-primary" href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+  <a class="btn btn-danger" href="{% url 'eliminar_cliente' cliente.id %}">Eliminar</a>
+  <a class="btn btn-secondary" href="{% url 'lista_clientes' %}">Volver</a>
+</p>
+{% endblock %}

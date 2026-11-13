@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar cliente - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h2>¿Eliminar a {{ cliente.nombre }} {{ cliente.apellidos }}?</h2>
+<form method="POST">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+  <a class="btn btn-secondary" href="{% url 'lista_clientes' %}">Cancelar</a>
+</form>
+{% endblock %}

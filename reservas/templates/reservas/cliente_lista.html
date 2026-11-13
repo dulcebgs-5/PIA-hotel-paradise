@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Clientes - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Clientes</h1>
+<p>Total: {{ total }} clientes</p>
+
+<form method="get" class="mb-3">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, apellidos o correo">
+  <button class="btn btn-primary" type="submit">Buscar</button>
+</form>
+
+<a class="btn btn-success" href="{% url 'crear_cliente' %}">Nuevo cliente</a>
+<hr>
+
+{% for cliente in clientes %}
+<p>
+  <a href="{% url 'detalle_cliente' cliente.id %}">
+    {{ cliente.nombre }} {{ cliente.apellidos }}
+  </a>
+  - {{ cliente.correo }} - {{ cliente.telefono }}
+  <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+  <a href="{% url 'eliminar_cliente' cliente.id %}">Eliminar</a>
+</p>
+<hr>
+{% empty %}
+<p>No hay clientes registrados.</p>
+{% endfor %}
+
+{% if clientes.has_previous %}
+<a href="?page={{ clientes.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Anterior</a>
+{% endif %}
+Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}
+{% if clientes.has_next %}
+<a href="?page={{ clientes.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Siguiente</a>
+{% endif %}
+{% endblock %}

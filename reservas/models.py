@@ -20,3 +20,16 @@ class Habitacion(models.Model):
 
     def get_absolute_url(self):
         return reverse('detalle_habitacion', args=[self.id])
+
+class Cliente(models.Model):
+    nombre = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    correo = models.EmailField(unique=True)
+    telefono = models.CharField(max_length=15)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellidos}"
+
+    def get_absolute_url(self):
+        return reverse('detalle_cliente', args=[self.id])

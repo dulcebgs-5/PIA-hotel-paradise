@@ -4,8 +4,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import HabitacionForm
-from .models import Habitacion, Reservacion
+from .forms import HabitacionForm, ClienteForm
+from .models import Habitacion, Cliente, Reservacion
 
 
 def paginar(request, lista, por_pagina=3):
@@ -92,4 +92,66 @@ def eliminar_habitacion(request, id):
         return redirect('lista_habitaciones')
     return render(request, 'reservas/habitacion_confirmar_eliminar.html', {
         'habitacion': habitacion, 'activas': activas,
+    })
+
+@login_required
+def lista_clientes(request):
+    clientes = Cliente.objects.order_by('nombre')
+    q = request.GET.get('q')
+    if q:
+        clientes = clientes.filter(
+            Q(nombre__icontains=q)
+            | Q(apellidos__icontains=q)
+            | Q(correo__icontains=q)
+        )
+    pagina = paginar(request, clientes)
+    return render(request, 'reservas/cliente_lista.html', {
+        'clientes': pagina,
+        'total': clientes.count(),
+        'q': q or '',
+    })
+
+
+@login_required
+def detalle_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    return render(request, 'reservas/cliente_detalle.html', {
+        'cliente': cliente,
+    })
+
+
+@login_required
+def crear_cliente(request):
+    form = ClienteForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Cliente creado correctamente.')
+        return redirect('lista_clientes')
+    return render(request, 'reservas/cliente_formulario.html', {
+        'form': form, 'titulo': 'Nuevo cliente',
+    })
+
+
+@login_required
+def editar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    form = ClienteForm(request.POST or None, instance=cliente)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Cliente actualizado correctamente.')
+        return redirect('lista_clientes')
+    return render(request, 'reservas/cliente_formulario.html', {
+        'form': form, 'titulo': 'Editar cliente',
+    })
+
+
+@login_required
+def eliminar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    if request.method == 'POST':
+        cliente.delete()
+        messages.success(request, 'Cliente eliminado correctamente.')
+        return redirect('lista_clientes')
+    return render(request, 'reservas/cliente_confirmar_eliminar.html', {
+        'cliente': cliente,
     })
