@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Cuenta creada - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>¡Bienvenido, {{ new_user.first_name }}!</h1>
+<p>Tu cuenta ha sido creada correctamente.</p>
+<p>Ahora puedes <a href="{% url 'login' %}">entrar</a>.</p>
+{% endblock %}

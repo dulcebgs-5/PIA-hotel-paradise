@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import HabitacionForm, ClienteForm, ReservacionForm
+from .forms import HabitacionForm, ClienteForm, ReservacionForm, UserRegistrationForm
 from .models import Habitacion, Cliente, Reservacion
 
 
@@ -236,4 +236,20 @@ def dashboard(request):
         'disponibles': disponibles,
         'ingresos': ingresos,
         'ultimas': ultimas,
+    })
+
+def register(request):
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return render(request, 'reservas/register_done.html', {
+                'new_user': new_user,
+            })
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'reservas/register.html', {
+        'user_form': user_form,
     })

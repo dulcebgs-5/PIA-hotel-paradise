@@ -1,5 +1,7 @@
 from django import forms
 from .models import Habitacion, Cliente, Reservacion
+from django.contrib.auth.models import User
+
 
 
 class HabitacionForm(forms.ModelForm):
@@ -73,3 +75,27 @@ class ReservacionForm(forms.ModelForm):
                     f'(${habitacion.precio_noche} por noche x {noches} noches).'
                 )
         return data
+
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(
+        label='Contraseña', widget=forms.PasswordInput
+    )
+    password2 = forms.CharField(
+        label='Repite la contraseña', widget=forms.PasswordInput
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'email']
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            raise forms.ValidationError('Las contraseñas no coinciden.')
+        return cd['password2']
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Ese correo ya está registrado.')
+        return email

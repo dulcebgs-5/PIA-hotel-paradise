@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Sesión cerrada - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Sesión cerrada</h1>
+<p>Cerraste sesión correctamente.</p>
+<p>Puedes <a href="{% url 'login' %}">volver a entrar</a>.</p>
+{% endblock %}

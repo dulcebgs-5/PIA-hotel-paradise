@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Crear cuenta - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h2>Crear una cuenta</h2>
+<p>Por favor, regístrate usando el siguiente formulario:</p>
+<form method="POST">
+  {% csrf_token %}
+  {{ user_form.as_p }}
+  <button class="btn btn-primary" type="submit">Crear mi cuenta</button>
+</form>
+<p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Entrar</a></p>
+{% endblock %}
