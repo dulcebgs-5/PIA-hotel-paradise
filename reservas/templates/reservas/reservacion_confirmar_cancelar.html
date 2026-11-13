@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Cancelar reservación - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h2>¿Cancelar la reservación de {{ reservacion.cliente }}?</h2>
+<p>Habitación {{ reservacion.habitacion.numero }} - {{ reservacion.fecha_entrada }} a {{ reservacion.fecha_salida }}</p>
+<form method="POST">
+  {% csrf_token %}
+  <button class="btn btn-warning" type="submit">Sí, cancelar</button>
+  <a class="btn btn-secondary" href="{% url 'lista_reservaciones' %}">Volver</a>
+</form>
+{% endblock %}

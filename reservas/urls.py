@@ -14,6 +14,11 @@ path('clientes/<int:id>/', views.detalle_cliente, name='detalle_cliente'),
 path('clientes/<int:id>/editar/', views.editar_cliente, name='editar_cliente'),
 path('clientes/<int:id>/eliminar/', views.eliminar_cliente, name='eliminar_cliente'),
 
-    
+    path('reservaciones/', views.lista_reservaciones, name='lista_reservaciones'),
+    path('reservaciones/nueva/', views.crear_reservacion, name='crear_reservacion'),
+    path('reservaciones/<int:id>/', views.detalle_reservacion, name='detalle_reservacion'),
+    path('reservaciones/<int:id>/editar/', views.editar_reservacion, name='editar_reservacion'),
+    path('reservaciones/<int:id>/cancelar/', views.cancelar_reservacion, name='cancelar_reservacion'),
+
 
 ]

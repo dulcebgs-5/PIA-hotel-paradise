@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import HabitacionForm, ClienteForm
+from .forms import HabitacionForm, ClienteForm, ReservacionForm
 from .models import Habitacion, Cliente, Reservacion
 
 
@@ -154,4 +154,65 @@ def eliminar_cliente(request, id):
         return redirect('lista_clientes')
     return render(request, 'reservas/cliente_confirmar_eliminar.html', {
         'cliente': cliente,
+    })
+@login_required
+def lista_reservaciones(request):
+    reservaciones = Reservacion.objects.order_by('-fecha_entrada')
+    q = request.GET.get('q')
+    if q:
+        reservaciones = reservaciones.filter(
+            Q(cliente__nombre__icontains=q)
+            | Q(cliente__apellidos__icontains=q)
+        )
+    pagina = paginar(request, reservaciones)
+    return render(request, 'reservas/reservacion_lista.html', {
+        'reservaciones': pagina,
+        'total': reservaciones.count(),
+        'q': q or '',
+    })
+
+
+@login_required
+def detalle_reservacion(request, id):
+    reservacion = get_object_or_404(Reservacion, id=id)
+    return render(request, 'reservas/reservacion_detalle.html', {
+        'reservacion': reservacion,
+    })
+
+
+@login_required
+def crear_reservacion(request):
+    form = ReservacionForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Reservación creada correctamente.')
+        return redirect('lista_reservaciones')
+    return render(request, 'reservas/reservacion_formulario.html', {
+        'form': form, 'titulo': 'Nueva reservación',
+    })
+
+
+@login_required
+def editar_reservacion(request, id):
+    reservacion = get_object_or_404(Reservacion, id=id)
+    form = ReservacionForm(request.POST or None, instance=reservacion)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Reservación actualizada correctamente.')
+        return redirect('lista_reservaciones')
+    return render(request, 'reservas/reservacion_formulario.html', {
+        'form': form, 'titulo': 'Editar reservación',
+    })
+
+
+@login_required
+def cancelar_reservacion(request, id):
+    reservacion = get_object_or_404(Reservacion, id=id)
+    if request.method == 'POST':
+        reservacion.estado = Reservacion.Estado.CANCELADA
+        reservacion.save()
+        messages.success(request, 'Reservación cancelada correctamente.')
+        return redirect('lista_reservaciones')
+    return render(request, 'reservas/reservacion_confirmar_cancelar.html', {
+        'reservacion': reservacion,
     })

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Reservaciones - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Reservaciones</h1>
+<p>Total: {{ total }} reservaciones</p>
+
+<form method="get" class="mb-3">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre del cliente">
+  <button class="btn btn-primary" type="submit">Buscar</button>
+</form>
+
+<a class="btn btn-success" href="{% url 'crear_reservacion' %}">Nueva reservación</a>
+<hr>
+
+{% for reservacion in reservaciones %}
+<p>
+  <a href="{% url 'detalle_reservacion' reservacion.id %}">
+    {{ reservacion.cliente }} - Habitación {{ reservacion.habitacion.numero }}
+  </a>
+  - {{ reservacion.fecha_entrada }} a {{ reservacion.fecha_salida }}
+  - ${{ reservacion.total }} - {{ reservacion.estado }}
+  <a href="{% url 'editar_reservacion' reservacion.id %}">Editar</a>
+  <a href="{% url 'cancelar_reservacion' reservacion.id %}">Cancelar</a>
+</p>
+<hr>
+{% empty %}
+<p>No hay reservaciones registradas.</p>
+{% endfor %}
+
+{% if reservaciones.has_previous %}
+<a href="?page={{ reservaciones.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Anterior</a>
+{% endif %}
+Página {{ reservaciones.number }} de {{ reservaciones.paginator.num_pages }}
+{% if reservaciones.has_next %}
+<a href="?page={{ reservaciones.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Siguiente</a>
+{% endif %}
+{% endblock %}

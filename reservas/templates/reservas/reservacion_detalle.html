@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Reservación {{ reservacion.id }} - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Reservación {{ reservacion.id }}</h1>
+<p>Cliente: {{ reservacion.cliente }}</p>
+<p>Habitación: {{ reservacion.habitacion.numero }} - {{ reservacion.habitacion.tipo }}</p>
+<p>Entrada: {{ reservacion.fecha_entrada }}</p>
+<p>Salida: {{ reservacion.fecha_salida }}</p>
+<p>Total: ${{ reservacion.total }}</p>
+<p>Estado: {{ reservacion.estado }}</p>
+<p>
+  <a class="btn btn-primary" href="{% url 'editar_reservacion' reservacion.id %}">Editar</a>
+  <a class="btn btn-warning" href="{% url 'cancelar_reservacion' reservacion.id %}">Cancelar reservación</a>
+  <a class="btn btn-secondary" href="{% url 'lista_reservaciones' %}">Volver</a>
+</p>
+{% endblock %}
