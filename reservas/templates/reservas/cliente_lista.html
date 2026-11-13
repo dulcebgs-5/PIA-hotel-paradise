@@ -3,35 +3,58 @@
 {% block title %}Clientes - Hotel Paradise{% endblock %}
 
 {% block content %}
-<h1>Clientes</h1>
-<p>Total: {{ total }} clientes</p>
+<h1 class="mb-3">Clientes</h1>
+<p class="text-muted">Total: {{ total }} clientes</p>
 
-<form method="get" class="mb-3">
-  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre, apellidos o correo">
-  <button class="btn btn-primary" type="submit">Buscar</button>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-6">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre, apellidos o correo">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </div>
 </form>
 
-<a class="btn btn-success" href="{% url 'crear_cliente' %}">Nuevo cliente</a>
-<hr>
+<a class="btn btn-success mb-3" href="{% url 'crear_cliente' %}">Nuevo cliente</a>
 
-{% for cliente in clientes %}
-<p>
-  <a href="{% url 'detalle_cliente' cliente.id %}">
-    {{ cliente.nombre }} {{ cliente.apellidos }}
-  </a>
-  - {{ cliente.correo }} - {{ cliente.telefono }}
-  <a href="{% url 'editar_cliente' cliente.id %}">Editar</a>
-  <a href="{% url 'eliminar_cliente' cliente.id %}">Eliminar</a>
-</p>
-<hr>
-{% empty %}
-<p>No hay clientes registrados.</p>
-{% endfor %}
+<div class="card">
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in clientes %}
+        <tr>
+          <td>
+            <a href="{% url 'detalle_cliente' cliente.id %}">
+              {{ cliente.nombre }} {{ cliente.apellidos }}
+            </a>
+          </td>
+          <td>{{ cliente.correo }}</td>
+          <td>{{ cliente.telefono }}</td>
+          <td>
+            <a class="btn btn-primary btn-sm" href="{% url 'editar_cliente' cliente.id %}">Editar</a>
+            <a class="btn btn-danger btn-sm" href="{% url 'eliminar_cliente' cliente.id %}">Eliminar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay clientes registrados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
+<p class="mt-3">Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}</p>
 {% if clientes.has_previous %}
 <a href="?page={{ clientes.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Anterior</a>
 {% endif %}
-Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}
 {% if clientes.has_next %}
 <a href="?page={{ clientes.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Siguiente</a>
 {% endif %}

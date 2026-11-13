@@ -3,36 +3,68 @@
 {% block title %}Reservaciones - Hotel Paradise{% endblock %}
 
 {% block content %}
-<h1>Reservaciones</h1>
-<p>Total: {{ total }} reservaciones</p>
+<h1 class="mb-3">Reservaciones</h1>
+<p class="text-muted">Total: {{ total }} reservaciones</p>
 
-<form method="get" class="mb-3">
-  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre del cliente">
-  <button class="btn btn-primary" type="submit">Buscar</button>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-6">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Buscar por nombre del cliente">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </div>
 </form>
 
-<a class="btn btn-success" href="{% url 'crear_reservacion' %}">Nueva reservación</a>
-<hr>
+<a class="btn btn-success mb-3" href="{% url 'crear_reservacion' %}">Nueva reservación</a>
 
-{% for reservacion in reservaciones %}
-<p>
-  <a href="{% url 'detalle_reservacion' reservacion.id %}">
-    {{ reservacion.cliente }} - Habitación {{ reservacion.habitacion.numero }}
-  </a>
-  - {{ reservacion.fecha_entrada }} a {{ reservacion.fecha_salida }}
-  - ${{ reservacion.total }} - {{ reservacion.estado }}
-  <a href="{% url 'editar_reservacion' reservacion.id %}">Editar</a>
-  <a href="{% url 'cancelar_reservacion' reservacion.id %}">Cancelar</a>
-</p>
-<hr>
-{% empty %}
-<p>No hay reservaciones registradas.</p>
-{% endfor %}
+<div class="card">
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Habitación</th>
+          <th>Fechas</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reservacion in reservaciones %}
+        <tr>
+          <td>
+            <a href="{% url 'detalle_reservacion' reservacion.id %}">
+              {{ reservacion.cliente }}
+            </a>
+          </td>
+          <td>{{ reservacion.habitacion.numero }}</td>
+          <td>{{ reservacion.fecha_entrada }} a {{ reservacion.fecha_salida }}</td>
+          <td>${{ reservacion.total }}</td>
+          <td>
+            {% if reservacion.estado == 'confirmada' %}
+            <span class="badge bg-success">Confirmada</span>
+            {% else %}
+            <span class="badge bg-secondary">Cancelada</span>
+            {% endif %}
+          </td>
+          <td>
+            <a class="btn btn-primary btn-sm" href="{% url 'editar_reservacion' reservacion.id %}">Editar</a>
+            <a class="btn btn-warning btn-sm" href="{% url 'cancelar_reservacion' reservacion.id %}">Cancelar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No hay reservaciones registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
+<p class="mt-3">Página {{ reservaciones.number }} de {{ reservaciones.paginator.num_pages }}</p>
 {% if reservaciones.has_previous %}
 <a href="?page={{ reservaciones.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Anterior</a>
 {% endif %}
-Página {{ reservaciones.number }} de {{ reservaciones.paginator.num_pages }}
 {% if reservaciones.has_next %}
 <a href="?page={{ reservaciones.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Siguiente</a>
 {% endif %}
