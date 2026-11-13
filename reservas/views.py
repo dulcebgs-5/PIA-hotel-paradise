@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import HabitacionForm, ClienteForm, ReservacionForm
@@ -215,4 +216,24 @@ def cancelar_reservacion(request, id):
         return redirect('lista_reservaciones')
     return render(request, 'reservas/reservacion_confirmar_cancelar.html', {
         'reservacion': reservacion,
+    })
+
+@login_required
+def dashboard(request):
+    total_clientes = Cliente.objects.count()
+    total_habitaciones = Habitacion.objects.count()
+    total_reservaciones = Reservacion.objects.count()
+    disponibles = Habitacion.objects.filter(disponible=True).count()
+    ingresos = Reservacion.objects.filter(
+        estado=Reservacion.Estado.CONFIRMADA
+    ).aggregate(total=Sum('total'))['total'] or 0
+    ultimas = Reservacion.objects.order_by('-id')[:5]
+
+    return render(request, 'reservas/dashboard.html', {
+        'total_clientes': total_clientes,
+        'total_habitaciones': total_habitaciones,
+        'total_reservaciones': total_reservaciones,
+        'disponibles': disponibles,
+        'ingresos': ingresos,
+        'ultimas': ultimas,
     })

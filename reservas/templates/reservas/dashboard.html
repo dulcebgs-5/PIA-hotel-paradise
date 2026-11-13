@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Hotel Paradise</h1>
+
+<div class="row">
+  <div class="col"><div class="card p-3">Total de Clientes<br><b>{{ total_clientes }}</b></div></div>
+  <div class="col"><div class="card p-3">Total de Habitaciones<br><b>{{ total_habitaciones }}</b></div></div>
+  <div class="col"><div class="card p-3">Total de Reservaciones<br><b>{{ total_reservaciones }}</b></div></div>
+  <div class="col"><div class="card p-3">Habitaciones Disponibles<br><b>{{ disponibles }}</b></div></div>
+  <div class="col"><div class="card p-3">Ingresos Generados<br><b>${{ ingresos }}</b></div></div>
+</div>
+
+<hr>
+<h3>Últimas reservaciones</h3>
+{% for reservacion in ultimas %}
+<p>{{ reservacion.cliente }} - Habitación {{ reservacion.habitacion.numero }} - ${{ reservacion.total }} - {{ reservacion.estado }}</p>
+{% empty %}
+<p>Todavía no hay reservaciones.</p>
+{% endfor %}
+{% endblock %}
