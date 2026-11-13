@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar habitación - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h2>¿Eliminar la habitación {{ habitacion.numero }} - {{ habitacion.tipo }}?</h2>
+{% if activas %}
+<div class="alert alert-danger">
+  Esta habitación tiene reservaciones activas y no se puede eliminar (Regla 5).
+</div>
+<a class="btn btn-secondary" href="{% url 'lista_habitaciones' %}">Volver</a>
+{% else %}
+<form method="POST">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+  <a class="btn btn-secondary" href="{% url 'lista_habitaciones' %}">Cancelar</a>
+</form>
+{% endif %}
+{% endblock %}

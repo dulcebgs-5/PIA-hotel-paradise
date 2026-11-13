@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Habitación {{ habitacion.numero }} - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Habitación {{ habitacion.numero }} - {{ habitacion.tipo }}</h1>
+<p>Precio por noche: ${{ habitacion.precio_noche }}</p>
+<p>Capacidad: {{ habitacion.capacidad }} personas</p>
+<p>{% if habitacion.disponible %}Disponible{% else %}No disponible{% endif %}</p>
+{% if habitacion.imagen %}
+<img src="{{ habitacion.imagen.url }}" alt="Habitación {{ habitacion.numero }}" style="max-width: 400px;">
+{% endif %}
+<p>
+  <a class="btn btn-primary" href="{% url 'editar_habitacion' habitacion.id %}">Editar</a>
+  <a class="btn btn-danger" href="{% url 'eliminar_habitacion' habitacion.id %}">Eliminar</a>
+  <a class="btn btn-secondary" href="{% url 'lista_habitaciones' %}">Volver</a>
+</p>
+{% endblock %}

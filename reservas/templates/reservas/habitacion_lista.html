@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Habitaciones - Hotel Paradise{% endblock %}
+
+{% block content %}
+<h1>Habitaciones</h1>
+<p>Total: {{ total }} habitaciones</p>
+
+<form method="get" class="mb-3">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por número o tipo (Doble, Suite...)">
+  <button class="btn btn-primary" type="submit">Buscar</button>
+</form>
+
+<a class="btn btn-success" href="{% url 'crear_habitacion' %}">Nueva habitación</a>
+<hr>
+
+{% for habitacion in habitaciones %}
+<p>
+  <a href="{% url 'detalle_habitacion' habitacion.id %}">
+    Habitación {{ habitacion.numero }} - {{ habitacion.tipo }}
+  </a>
+  - ${{ habitacion.precio_noche }} por noche
+  - Capacidad: {{ habitacion.capacidad }}
+  - {% if habitacion.disponible %}Disponible{% else %}No disponible{% endif %}
+  <a href="{% url 'editar_habitacion' habitacion.id %}">Editar</a>
+  <a href="{% url 'eliminar_habitacion' habitacion.id %}">Eliminar</a>
+</p>
+<hr>
+{% empty %}
+<p>No hay habitaciones registradas.</p>
+{% endfor %}
+
+{% if habitaciones.has_previous %}
+<a href="?page={{ habitaciones.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Anterior</a>
+{% endif %}
+Página {{ habitaciones.number }} de {{ habitaciones.paginator.num_pages }}
+{% if habitaciones.has_next %}
+<a href="?page={{ habitaciones.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Siguiente</a>
+{% endif %}
+{% endblock %}
